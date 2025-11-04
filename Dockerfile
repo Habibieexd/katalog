@@ -197,7 +197,7 @@ done
 
 # Migrate
 php artisan migrate --force --no-interaction || echo "Migration failed, continuing..."
-
+php artisan db:seed --force --no-interaction || echo "Seeder failed, continuing..."
 # Storage symlink
 php artisan storage:link --no-interaction || true
 
