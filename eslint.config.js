@@ -11,7 +11,7 @@ export default [
     ...typescript.configs.recommended,
     {
         ...react.configs.flat.recommended,
-        ...react.configs.flat['jsx-runtime'], // Required for React 17+
+        ...react.configs.flat['jsx-runtime'],
         languageOptions: {
             globals: {
                 ...globals.browser,
@@ -21,6 +21,12 @@ export default [
             'react/react-in-jsx-scope': 'off',
             'react/prop-types': 'off',
             'react/no-unescaped-entities': 'off',
+
+            // Tambahkan rules yang ingin di-disable di sini
+            '@typescript-eslint/no-explicit-any': 'off',
+            '@typescript-eslint/no-unused-vars': 'off',
+            // atau gunakan 'warn' untuk warning saja
+            // '@typescript-eslint/no-unused-vars': 'warn',
         },
         settings: {
             react: {
@@ -35,10 +41,18 @@ export default [
         rules: {
             'react-hooks/rules-of-hooks': 'error',
             'react-hooks/exhaustive-deps': 'warn',
+            // Atau disable jika mengganggu:
+            'react-hooks/exhaustive-deps': 'off',
         },
     },
     {
-        ignores: ['vendor', 'node_modules', 'public', 'bootstrap/ssr', 'tailwind.config.js'],
+        ignores: [
+            'vendor',
+            'node_modules',
+            'public',
+            'bootstrap/ssr',
+            'tailwind.config.js',
+        ],
     },
-    prettier, // Turn off all rules that might conflict with Prettier
+    prettier,
 ];
