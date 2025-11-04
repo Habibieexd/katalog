@@ -1,3 +1,4 @@
+import BlurImage from '@/components/blur-image';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { formatRupiah } from '@/lib/formatRupiah';
 import { detail } from '@/routes/products';
@@ -16,10 +17,14 @@ export default function RelatedProductsCard({ products }: any) {
                             <Link href={detail(item.slug)}>
                                 <div className="flex aspect-[3/4] w-full items-center justify-center bg-gray-100">
                                     {item?.images?.length > 0 ? (
-                                        <img
+                                        <BlurImage
                                             src={`/storage/${item.images[0].path}`}
                                             alt={item.name}
-                                            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:opacity-90"
+                                            placeholder={
+                                                item.images[0].placeholder
+                                            }
+                                            blurhash={item.images[0].blurhash}
+                                            className="h-full w-full transition-transform duration-700 group-hover:scale-110"
                                         />
                                     ) : (
                                         <div className="flex w-full items-center justify-center">

@@ -18,7 +18,7 @@ class HomeController extends Controller
         // Query products - batasi jumlah images
         $query = Product::with([
             'images' => function ($query) {
-                $query->select(['id', 'product_id', 'path'])
+                $query->select(['id', 'product_id', 'path', 'placeholder'])
                     ->limit(1); // ambil 1 image saja untuk listing
             },
             'category:id,name,slug' // select hanya kolom yang diperlukan

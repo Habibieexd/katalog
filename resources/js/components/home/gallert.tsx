@@ -3,6 +3,7 @@ import { detail } from '@/routes/products';
 import { Link, router } from '@inertiajs/react';
 import { motion, useInView } from 'motion/react';
 import { useRef, useState } from 'react';
+import BlurImage from '../blur-image';
 import { Button } from '../ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 
@@ -142,12 +143,20 @@ export function Gallery({ products, categories, currentCategory }: any) {
                                     <div className="flex h-full flex-col overflow-hidden rounded-2xl bg-white transition-all duration-300 hover:shadow-2xl">
                                         <div className="relative flex-shrink-0 overflow-hidden">
                                             <Link href={detail(item.slug)}>
-                                                <div className="flex items-center justify-center rounded-md bg-gray-100">
+                                                <div className="flex items-center justify-center overflow-hidden rounded-md bg-gray-100">
                                                     {item?.images.length > 0 ? (
-                                                        <img
+                                                        <BlurImage
                                                             src={`/storage/${item.images[0].path}`}
                                                             alt={item.name}
-                                                            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                            placeholder={
+                                                                item.images[0]
+                                                                    .placeholder
+                                                            }
+                                                            blurhash={
+                                                                item.images[0]
+                                                                    .blurhash
+                                                            }
+                                                            className="h-full w-full transition-transform duration-700 group-hover:scale-110"
                                                         />
                                                     ) : (
                                                         <span className="font-bold text-gray-500">
