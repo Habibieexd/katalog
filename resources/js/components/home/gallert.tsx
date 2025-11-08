@@ -1,9 +1,11 @@
 import { formatRupiah } from '@/lib/formatRupiah';
 import { detail } from '@/routes/products';
 import { Link, router } from '@inertiajs/react';
+import { MoveRight } from 'lucide-react';
 import { motion, useInView } from 'motion/react';
 import { useRef, useState } from 'react';
 import BlurImage from '../blur-image';
+import { DisplayDescription } from '../reusable/display-description';
 import { Button } from '../ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 
@@ -75,8 +77,8 @@ export function Gallery({ products, categories, currentCategory }: any) {
                     onValueChange={handleTabChange}
                     className="w-full space-y-6"
                 >
-                    <div className="flex w-full flex-col gap-2 lg:flex-row lg:justify-between lg:gap-0">
-                        <div className="overflow-x-auto">
+                    <div className="flex w-full flex-row justify-between gap-0">
+                        <div className="inline-flex items-center overflow-x-auto">
                             <TabsList className="inline-flex h-fit space-x-4 bg-transparent p-0">
                                 <TabsTrigger
                                     value="semua"
@@ -94,27 +96,10 @@ export function Gallery({ products, categories, currentCategory }: any) {
                                     </TabsTrigger>
                                 ))}
                             </TabsList>
-                            {/* <TabsList className="inline-flex bg-[#3E2308]/95 px-1">
-                                <TabsTrigger
-                                    value="semua"
-                                    className="text-sm whitespace-nowrap text-[#FCFAF3] transition-colors data-[state=active]:bg-[#FFFEFB] data-[state=active]:text-[#3E2308]"
-                                >
-                                    Semua
-                                </TabsTrigger>
-                                {categories.map((e: any) => (
-                                    <TabsTrigger
-                                        key={e.slug}
-                                        value={e.slug}
-                                        className="text-sm whitespace-nowrap text-[#FCFAF3] transition-colors data-[state=active]:bg-[#FFFEFB] data-[state=active]:text-[#3E2308]"
-                                    >
-                                        {e.name}
-                                    </TabsTrigger>
-                                ))}
-                            </TabsList> */}
                         </div>
                         <Button
                             asChild
-                            className="w-full text-[#3E2308] lg:w-auto"
+                            className="hidden text-[#3E2308] md:block"
                             variant={'link'}
                         >
                             <Link href="/products">Lihat Semua</Link>
@@ -141,9 +126,12 @@ export function Gallery({ products, categories, currentCategory }: any) {
                                     className="group h-full"
                                 >
                                     <div className="flex h-full flex-col overflow-hidden rounded-2xl bg-white transition-all duration-300 hover:shadow-2xl">
-                                        <div className="relative flex-shrink-0 overflow-hidden">
-                                            <Link href={detail(item.slug)}>
-                                                <div className="flex items-center justify-center overflow-hidden rounded-md bg-gray-100">
+                                        <div className="relative h-full overflow-hidden">
+                                            <Link
+                                                href={detail(item.slug)}
+                                                className="h-full"
+                                            >
+                                                <div className="flex h-full items-center justify-center overflow-hidden rounded-md bg-gray-100">
                                                     {item?.images.length > 0 ? (
                                                         <BlurImage
                                                             src={`/storage/${item.images[0].path}`}
@@ -160,7 +148,7 @@ export function Gallery({ products, categories, currentCategory }: any) {
                                                         />
                                                     ) : (
                                                         <span className="font-bold text-gray-500">
-                                                            400 x 225
+                                                            1080 x 1920
                                                         </span>
                                                     )}
                                                 </div>
@@ -192,9 +180,13 @@ export function Gallery({ products, categories, currentCategory }: any) {
                                                     {item.name}
                                                 </Link>
 
-                                                <p className="line-clamp-2 text-sm leading-relaxed text-[#5A4A3A]">
-                                                    {item.description}
-                                                </p>
+                                                <div className="line-clamp-2">
+                                                    <DisplayDescription
+                                                        description={
+                                                            item.description
+                                                        }
+                                                    />
+                                                </div>
 
                                                 <p className="text-xl font-bold text-[#3e2308]">
                                                     {formatRupiah(item.price)}
@@ -238,6 +230,16 @@ export function Gallery({ products, categories, currentCategory }: any) {
                         </div>
                     </TabsContent>
                 </Tabs>
+                <Button
+                    asChild
+                    className="w-full text-base text-[#3E2308] md:hidden"
+                    variant={'link'}
+                >
+                    <Link href="/products">
+                        Lihat semua product
+                        <MoveRight />
+                    </Link>
+                </Button>
             </div>
         </section>
     );

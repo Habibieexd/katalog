@@ -1,5 +1,7 @@
+import { EditorKit } from '@/components/editor-kit';
 import { Button } from '@/components/ui/button';
 import { CardDescription, CardTitle } from '@/components/ui/card';
+import { Editor, EditorContainer } from '@/components/ui/editor';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -10,12 +12,13 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
+import { formatRupiah } from '@/lib/formatRupiah';
 import { update } from '@/routes/admin/product';
 import { BreadcrumbItem } from '@/types';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { Upload, X } from 'lucide-react';
+import { Plate, usePlateEditor } from 'platejs/react';
 import { FormEventHandler, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -60,6 +63,13 @@ export default function EditProduct() {
             deleted_image_ids: [],
             _method: 'PUT',
         });
+
+    const editor = usePlateEditor({
+        plugins: EditorKit,
+        value: (data.description && JSON.parse(data.description)) || [
+            { type: 'p', children: [{ text: '' }] },
+        ],
+    });
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || []);
@@ -212,14 +222,27 @@ export default function EditProduct() {
                         {/* Description */}
                         <div className="space-y-2">
                             <Label htmlFor="description">Deskripsi</Label>
-                            <Textarea
-                                id="description"
-                                value={data.description}
-                                onChange={(e) =>
-                                    setData('description', e.target.value)
-                                }
-                                rows={4}
-                            />
+                            <Plate
+                                editor={editor}
+                                onChange={({ value }) => {
+                                    // Convert editor value to HTML or JSON string
+
+                                    if (value) {
+                                        setData(
+                                            'description',
+                                            JSON.stringify(value),
+                                        );
+                                    }
+                                }}
+                            >
+                                <EditorContainer className="rounded-md border border-input px-3 py-2">
+                                    <Editor
+                                        className="min-h-[200px] p-0 sm:p-0"
+                                        variant="default"
+                                        placeholder="Masukkan deskripsi produk"
+                                    />
+                                </EditorContainer>
+                            </Plate>
                             {errors.description && (
                                 <p className="text-sm text-red-500">
                                     {errors.description}
@@ -234,16 +257,17 @@ export default function EditProduct() {
                             </Label>
                             <Input
                                 id="price"
-                                type="text"
+                                type="number"
                                 value={data.price}
                                 onChange={(e) => {
-                                    const value = e.target.value.replace(
-                                        /\D/g,
-                                        '',
-                                    );
-                                    setData('price', value);
+                                    setData('price', e.target.value);
                                 }}
                             />
+                            {data.price && (
+                                <p className="font-semibold text-[#5A4A3A]">
+                                    {formatRupiah(data.price)}
+                                </p>
+                            )}
                             {errors.price && (
                                 <p className="text-sm text-red-500">
                                     {errors.price}
@@ -295,7 +319,7 @@ export default function EditProduct() {
                                         {allImages.map((img: any, index) => (
                                             <div
                                                 key={img.id || index}
-                                                className="group relative"
+                                                className="group relative aspect-[3/4]"
                                             >
                                                 <img
                                                     src={
@@ -304,7 +328,7 @@ export default function EditProduct() {
                                                             : `/storage/${img.path}`
                                                     }
                                                     alt={`Preview ${index + 1}`}
-                                                    className="h-32 w-full rounded-lg border object-cover"
+                                                    className="h-full w-full rounded-lg border object-cover"
                                                 />
                                                 <button
                                                     type="button"
@@ -327,11 +351,11 @@ export default function EditProduct() {
                                                     onClick={() =>
                                                         setPrimaryImage(index)
                                                     }
-                                                    className={`absolute bottom-2 left-2 rounded px-2 py-1 text-xs ${
+                                                    className={`absolute bottom-2 left-2 cursor-pointer rounded px-2 py-1 text-xs ${
                                                         data.primary_image_index ===
                                                         index
                                                             ? 'bg-blue-500 text-white'
-                                                            : 'bg-white/80 text-gray-700'
+                                                            : 'border border-primary bg-white/80 text-gray-700'
                                                     }`}
                                                 >
                                                     {data.primary_image_index ===

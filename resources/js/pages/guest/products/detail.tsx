@@ -1,4 +1,6 @@
+import BlurImage from '@/components/blur-image';
 import Fancybox from '@/components/fancybox';
+import { DisplayDescription } from '@/components/reusable/display-description';
 import RelatedProductsCard from '@/components/reusable/guest/related-products-card';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -33,7 +35,7 @@ export default function Detail({ product, related_products }: any) {
             <div className="bg-[#FCFAF3] px-6 py-12 sm:px-6 md:px-8 md:py-24">
                 <div className="container mx-auto h-[100%] w-full max-w-5xl">
                     <div className="grid gap-6 md:grid-cols-[1.1fr_1fr] md:gap-10">
-                        <div className="h-fit space-y-4">
+                        <div className="h-full space-y-4">
                             {/* Gambar Utama */}
                             <div
                                 className={cn(
@@ -55,14 +57,18 @@ export default function Detail({ product, related_products }: any) {
                                                 data-fancybox="images"
                                                 href={`/storage/${product?.images[selectedImageIndex].path}`}
                                             >
-                                                <img
+                                                <BlurImage
                                                     src={`/storage/${product?.images[selectedImageIndex].path}`}
                                                     alt={
                                                         product?.images[
                                                             selectedImageIndex
                                                         ].path
                                                     }
-                                                    className="h-full w-full rounded-md transition-transform duration-700"
+                                                    placeholder={
+                                                        product?.images[
+                                                            selectedImageIndex
+                                                        ].placeholder
+                                                    }
                                                 />
                                             </Link>
                                         )}
@@ -80,9 +86,12 @@ export default function Detail({ product, related_products }: any) {
                                                     href={`/storage/${image.path}`}
                                                     className="hidden"
                                                 >
-                                                    <img
+                                                    <BlurImage
                                                         src={`/storage/${image.path}`}
-                                                        alt={image.path}
+                                                        alt={image.name}
+                                                        placeholder={
+                                                            image.placeholder
+                                                        }
                                                         className="h-full w-full object-cover transition-transform duration-700"
                                                     />
                                                 </Link>
@@ -90,7 +99,7 @@ export default function Detail({ product, related_products }: any) {
                                     </Fancybox>
                                 ) : (
                                     <span className="font-bold text-gray-500">
-                                        400 x 225
+                                        1080 x 1920
                                     </span>
                                 )}
                             </div>
@@ -144,8 +153,12 @@ export default function Detail({ product, related_products }: any) {
                                         <Label className="text-[#3e2308]">
                                             Description
                                         </Label>
-                                        <p className="leading-relaxed wrap-anywhere text-[#5A4A3A]">
-                                            {product.description}
+                                        <p className="leading-relaxed">
+                                            <DisplayDescription
+                                                description={
+                                                    product.description
+                                                }
+                                            />
                                         </p>
                                     </div>
 

@@ -19,8 +19,10 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+import { formatRupiah } from '@/lib/formatRupiah';
 import { edit } from '@/routes/admin/product';
 import { Link, router } from '@inertiajs/react';
+import { DisplayDescription } from '../display-description';
 
 export default function ({ product }: { product: any }) {
     const handleDelete = () => {
@@ -35,7 +37,7 @@ export default function ({ product }: { product: any }) {
         <Card className="flex h-full flex-col justify-between shadow-lg">
             <div className="space-y-4">
                 <CardHeader className="relative">
-                    <div className="flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-md bg-gray-100">
+                    <div className="flex aspect-[3/4] w-full items-center justify-center overflow-hidden rounded-md bg-gray-100">
                         {/* Category badge di pojok */}
                         {product.category && (
                             <Badge
@@ -67,8 +69,12 @@ export default function ({ product }: { product: any }) {
                             {product.category.name}
                         </Badge>
                     )}
-                    <CardDescription>{product.description}</CardDescription>
-                    <Badge variant="outline">Rp. {product.price}</Badge>
+                    <CardDescription className="line-clamp-3">
+                        <DisplayDescription description={product.description} />
+                    </CardDescription>
+                    <Badge variant="outline">
+                        {formatRupiah(product.price)}
+                    </Badge>
                 </CardContent>
             </div>
 
@@ -77,14 +83,18 @@ export default function ({ product }: { product: any }) {
                     asChild
                     variant="outline"
                     size="sm"
-                    className="border-primary"
+                    className="border-primary/50"
                 >
                     <Link href={edit(product.id)}>Edit</Link>
                 </Button>
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
-                        <Button variant="destructive" size="sm">
-                            Delete
+                        <Button
+                            variant="destructive"
+                            className="cursor-pointer"
+                            size="sm"
+                        >
+                            Hapus
                         </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
@@ -92,7 +102,7 @@ export default function ({ product }: { product: any }) {
                             <AlertDialogTitle>Hapus Produk?</AlertDialogTitle>
                             <AlertDialogDescription>
                                 Tindakan ini tidak dapat dibatalkan. Produk
-                                <span className="font-semibold">
+                                <span className="font-semibold text-primary">
                                     {' '}
                                     {product.name}{' '}
                                 </span>

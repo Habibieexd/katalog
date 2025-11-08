@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { formatRupiah } from '@/lib/formatRupiah';
 import { detail } from '@/routes/products';
 import { Link } from '@inertiajs/react';
+import { DisplayDescription } from '../display-description';
 
 export default function RelatedProductsCard({ products }: any) {
     return (
@@ -29,7 +30,7 @@ export default function RelatedProductsCard({ products }: any) {
                                     ) : (
                                         <div className="flex w-full items-center justify-center">
                                             <span className="font-bold text-gray-500">
-                                                400 x 225
+                                                1080 x 1920
                                             </span>
                                         </div>
                                     )}
@@ -46,7 +47,9 @@ export default function RelatedProductsCard({ products }: any) {
                                 {item.name}
                             </p>
                             <p className="mt-1 line-clamp-2 text-[#5A4A3A]">
-                                {item.description}
+                                <DisplayDescription
+                                    description={item.description}
+                                />
                             </p>
                             <p className="text-xl font-bold text-[#3e2308]">
                                 {formatRupiah(item.price)}
