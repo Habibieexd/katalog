@@ -55,7 +55,7 @@ export function Navigation() {
         { label: 'Galeri', href: '/#galeri' },
         { label: 'Proses', href: '/#proses' },
         { label: 'Kontak', href: '/#kontak' },
-        { label: 'Products', href: '/products' },
+        { label: 'Produk', href: '/products' },
     ];
 
     return (
@@ -120,7 +120,7 @@ export function Navigation() {
                                     <div className="flex flex-col gap-4 pt-4 pb-4">
                                         {menus.map((item) => (
                                             <Link
-                                                href={`/${item.href.toLowerCase()}`}
+                                                href={`${item.href.toLowerCase()}`}
                                                 key={item.label}
                                                 onClick={() =>
                                                     setMobileMenuOpen(false)
