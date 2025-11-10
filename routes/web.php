@@ -10,7 +10,7 @@ use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('products', [ProductsController::class, 'index'])->name('products');
+Route::get('products', [ProductsController::class, 'index'])->name('products.index');
 Route::get('products/{slug}', [ProductsController::class, 'show'])->name('products.detail');
 
 Route::middleware(['auth', 'verified'])->group(function () {

@@ -153,13 +153,13 @@ export default function Detail({ product, related_products }: any) {
                                         <Label className="text-[#3e2308]">
                                             Description
                                         </Label>
-                                        <p className="leading-relaxed">
+                                        <div className="leading-relaxed">
                                             <DisplayDescription
                                                 description={
                                                     product.description
                                                 }
                                             />
-                                        </p>
+                                        </div>
                                     </div>
 
                                     <div className="mb-4 flex flex-col gap-2">

@@ -46,11 +46,11 @@ export default function RelatedProductsCard({ products }: any) {
                             <p className="mt-1 text-xl font-semibold text-[#3e2308]">
                                 {item.name}
                             </p>
-                            <p className="mt-1 line-clamp-2 text-[#5A4A3A]">
+                            <div className="mt-1 line-clamp-2 text-[#5A4A3A]">
                                 <DisplayDescription
                                     description={item.description}
                                 />
-                            </p>
+                            </div>
                             <p className="text-xl font-bold text-[#3e2308]">
                                 {formatRupiah(item.price)}
                             </p>

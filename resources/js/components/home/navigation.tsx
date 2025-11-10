@@ -1,3 +1,4 @@
+import { Link } from '@inertiajs/react';
 import { Menu, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
@@ -18,7 +19,10 @@ export function Navigation() {
 
         const handleScroll = () => {
             const heroBottom = hero.offsetTop + hero.offsetHeight;
-            setScrolled(window.scrollY > heroBottom - 50);
+            setScrolled(window.scrollY > heroBottom - 60);
+            if (window.scrollY < heroBottom - 60) {
+                setMobileMenuOpen(false);
+            }
         };
 
         handleScroll(); // Check initial state
@@ -45,11 +49,14 @@ export function Navigation() {
         };
     }, [mobileMenuOpen]);
 
-    const scrollToSection = (id: string) => {
-        const element = document.getElementById(id);
-        element?.scrollIntoView({ behavior: 'smooth' });
-        setMobileMenuOpen(false); // Close mobile menu after click
-    };
+    const menus = [
+        { label: 'Beranda', href: '/#beranda' },
+        { label: 'Tentang', href: '/#tentang' },
+        { label: 'Galeri', href: '/#galeri' },
+        { label: 'Proses', href: '/#proses' },
+        { label: 'Kontak', href: '/#kontak' },
+        { label: 'Products', href: '/products' },
+    ];
 
     return (
         <AnimatePresence>
@@ -63,7 +70,7 @@ export function Navigation() {
                 >
                     <div
                         ref={navRef}
-                        className="mx-auto max-w-7xl px-4 py-4 sm:px-6"
+                        className="relative mx-auto max-w-7xl px-4 py-4 sm:px-6"
                     >
                         <div className="flex items-center justify-between">
                             <div className="font-['Playfair_Display'] text-2xl font-bold text-[#dc7202] sm:text-3xl">
@@ -72,27 +79,15 @@ export function Navigation() {
 
                             {/* Desktop Navigation */}
                             <div className="hidden gap-6 md:flex lg:gap-8">
-                                {[
-                                    'Beranda',
-                                    'Tentang',
-                                    'Galeri',
-                                    'Proses',
-                                    'Kontak',
-                                ].map((item) => (
-                                    <button
-                                        key={item}
-                                        onClick={() =>
-                                            scrollToSection(
-                                                item === 'Beranda'
-                                                    ? 'hero'
-                                                    : item.toLowerCase(),
-                                            )
-                                        }
+                                {menus.map((item) => (
+                                    <Link
+                                        key={item.label}
+                                        href={`${item.href.toLowerCase()}`}
                                         className="group relative font-medium text-[#3E2308] transition-colors duration-300"
                                     >
-                                        {item}
+                                        {item.label}
                                         <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-[#dc7202] transition-all duration-300 group-hover:w-full" />
-                                    </button>
+                                    </Link>
                                 ))}
                             </div>
 
@@ -120,29 +115,20 @@ export function Navigation() {
                                     animate={{ opacity: 1, height: 'auto' }}
                                     exit={{ opacity: 0, height: 0 }}
                                     transition={{ duration: 0.2 }}
-                                    className="overflow-hidden md:hidden"
+                                    className="absolute right-0 left-0 w-full overflow-hidden border-b border-[#3E2308]/80 bg-[#FCFAF3] px-4 md:hidden"
                                 >
                                     <div className="flex flex-col gap-4 pt-4 pb-4">
-                                        {[
-                                            'Beranda',
-                                            'Tentang',
-                                            'Galeri',
-                                            'Proses',
-                                            'Kontak',
-                                        ].map((item) => (
-                                            <button
-                                                key={item}
+                                        {menus.map((item) => (
+                                            <Link
+                                                href={`/${item.href.toLowerCase()}`}
+                                                key={item.label}
                                                 onClick={() =>
-                                                    scrollToSection(
-                                                        item === 'Beranda'
-                                                            ? 'hero'
-                                                            : item.toLowerCase(),
-                                                    )
+                                                    setMobileMenuOpen(false)
                                                 }
                                                 className="text-left text-[#5A4A3A] transition-colors duration-300 hover:text-[#F4B393]"
                                             >
-                                                {item}
-                                            </button>
+                                                {item.label}
+                                            </Link>
                                         ))}
                                     </div>
                                 </motion.div>
