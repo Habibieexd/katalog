@@ -8,7 +8,7 @@ import GuestLayout from '@/layouts/guest-layout';
 import { Head, usePage } from '@inertiajs/react';
 
 export default function Welcome() {
-    const { auth, products, categories } = usePage().props;
+    const { products, categories } = usePage().props;
     const currentCategory = new URLSearchParams(window.location.search).get(
         'category',
     );

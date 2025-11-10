@@ -73,9 +73,12 @@ export function Navigation() {
                         className="relative mx-auto max-w-7xl px-4 py-4 sm:px-6"
                     >
                         <div className="flex items-center justify-between">
-                            <div className="font-['Playfair_Display'] text-2xl font-bold text-[#dc7202] sm:text-3xl">
+                            <Link
+                                href="/"
+                                className="font-['Playfair_Display'] text-2xl font-bold text-[#dc7202] sm:text-3xl"
+                            >
                                 Sentra Tenun
-                            </div>
+                            </Link>
 
                             {/* Desktop Navigation */}
                             <div className="hidden gap-6 md:flex lg:gap-8">
