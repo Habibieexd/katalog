@@ -58,7 +58,9 @@ class ProductsController extends Controller
 
     public function show($slug)
     {
-        $product = Product::with(['category', 'images'])->where('slug', $slug)->first();
+        $product = Product::with(['category', 'images' => function ($query) {
+            $query->orderBy('is_primary', 'desc');
+        }])->where('slug', $slug)->first();
 
         $related_products = Product::with(['category', 'images'])
             ->where('id', '!=', $product->id) // Exclude produk yang sedang dilihat

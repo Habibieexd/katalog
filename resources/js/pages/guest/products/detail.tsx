@@ -15,6 +15,7 @@ import { useState } from 'react';
 
 export default function Detail({ product, related_products }: any) {
     const [quantity, setQuantity] = useState(1); // 🧩 counter state
+    console.log(product.images);
 
     const handleWhatsAppClick = (motifName: string) => {
         const phoneNumber = '62895341975182';
@@ -43,7 +44,7 @@ export default function Detail({ product, related_products }: any) {
                 <div className="bg-[#FCFAF3] px-6 py-12 sm:px-6 md:px-8 md:py-24">
                     <div className="container mx-auto h-[100%] w-full max-w-5xl">
                         <div className="grid gap-6 md:grid-cols-[1.1fr_1fr] md:gap-10">
-                            <div className="h-full space-y-4">
+                            <div className="h-fit space-y-4">
                                 {/* Gambar Utama */}
                                 <div
                                     className={cn(
@@ -115,7 +116,7 @@ export default function Detail({ product, related_products }: any) {
 
                                 {/* Thumbnail Gambar Lainnya */}
                                 {product?.images?.length > 1 && (
-                                    <div className="flex gap-2 overflow-x-auto p-2">
+                                    <div className="flex flex-wrap gap-2 p-2">
                                         {product.images.map(
                                             (image: any, index: number) => (
                                                 <button
