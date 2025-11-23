@@ -20,7 +20,11 @@ class ProductController extends Controller
     public function index()
     {
         //get all product from database
-        $product = Product::with(['category', 'images'])->get();
+        $product = Product::with(['category', 'images' => function ($query) {
+            $query->select(['id', 'product_id', 'path', 'placeholder'])
+                ->where('is_primary', true) // ambil primary image saja
+                ->limit(1);
+        }])->get();
 
         //render with data "product"
         return Inertia::render('product/index', [
