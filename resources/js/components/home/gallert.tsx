@@ -171,7 +171,7 @@ export function Gallery({ products, categories, currentCategory }: any) {
                                             </Link>
                                         </div>
 
-                                        <div className="flex flex-1 flex-col justify-between gap-4 bg-[#FFFEFB] md:p-6">
+                                        <div className="m flex flex-1 flex-col justify-between gap-4 bg-[#FFFEFB] py-6 md:p-6">
                                             <div className="space-y-1">
                                                 <Link
                                                     href={`products/${item.slug}`}
