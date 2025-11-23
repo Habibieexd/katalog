@@ -87,8 +87,10 @@ class ProductController extends Controller
     {
         $categories = ProductCategory::all();
 
-        // Load relasi images dengan eager loading
-        $product->load('images');
+        // Load relasi images dengan eager loading dan ordering
+        $product->load(['images' => function ($query) {
+            $query->orderBy('is_primary', 'desc');
+        }]);
 
         return Inertia::render('product/edit', [
             'categories' => $categories,
