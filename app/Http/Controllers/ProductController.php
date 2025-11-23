@@ -111,7 +111,7 @@ class ProductController extends Controller
             'price' => 'required|integer|min:0',
             'is_active' => 'boolean',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'primary_image_index' => 'nullable|integer',
+            'primary_image_id' => 'nullable|integer',
             'deleted_image_ids' => 'nullable|array',
             'deleted_image_ids.*' => 'integer|exists:product_images,id',
         ]);
@@ -134,11 +134,10 @@ class ProductController extends Controller
                     ->first();
 
                 if ($image) {
-                    // ✅ Hapus file dari Cloudinary
+                    // Hapus file dari Cloudinary
                     try {
                         Storage::disk('cloudinary')->delete($image->path);
                     } catch (\Exception $e) {
-                        // Log error tapi tetap lanjut
                         Log::error('Failed to delete from Cloudinary: ' . $e->getMessage());
                     }
 
@@ -149,12 +148,12 @@ class ProductController extends Controller
         }
 
         // Upload gambar baru jika ada
+        $newImageIds = [];
         if ($request->hasFile('images')) {
-            // Hitung jumlah gambar yang sudah ada (untuk index)
             $existingImagesCount = $product->images()->count();
 
             foreach ($request->file('images') as $index => $image) {
-                // ✅ Upload ke Cloudinary
+                // Upload ke Cloudinary
                 $fileName = 'product_' . $product->id . '_' . time() . '_' . ($existingImagesCount + $index) . '.' . $image->extension();
 
                 $path = Storage::disk('cloudinary')->putFileAs(
@@ -163,32 +162,54 @@ class ProductController extends Controller
                     $fileName
                 );
 
-                // ✅ Generate LQIP placeholder dari Cloudinary (atau set null)
-                $placeholder = $this->generatePlaceholder($path); // Atau gunakan fungsi generatePlaceholder jika mau
+                // Generate LQIP placeholder dari Cloudinary
+                $placeholder = $this->generatePlaceholder($path);
 
-                ProductImage::create([
+                $newImage = ProductImage::create([
                     'product_id' => $product->id,
                     'path' => $path,
                     'placeholder' => $placeholder,
                     'is_primary' => false,
                 ]);
+
+                $newImageIds[] = $newImage->id;
             }
         }
 
         // Update primary image
-        if ($request->filled('primary_image_index')) {
-            // Reset semua
+        // Reset semua is_primary ke false
+        ProductImage::where('product_id', $product->id)
+            ->update(['is_primary' => false]);
+
+        if ($request->filled('primary_image_id')) {
+            // Set primary berdasarkan ID yang dikirim dari frontend
             ProductImage::where('product_id', $product->id)
-                ->update(['is_primary' => false]);
+                ->where('id', $request->primary_image_id)
+                ->update(['is_primary' => true]);
+        } elseif ($request->has('primary_image_id') && $request->primary_image_id === null) {
+            // Jika primary_image_id adalah null, berarti user memilih gambar baru pertama
+            // Set gambar baru pertama sebagai primary
+            if (!empty($newImageIds)) {
+                ProductImage::where('id', $newImageIds[0])
+                    ->update(['is_primary' => true]);
+            } else {
+                // Jika tidak ada gambar baru, set gambar pertama yang tersisa sebagai primary
+                $firstImage = ProductImage::where('product_id', $product->id)
+                    ->orderBy('id')
+                    ->first();
 
-            // Get all images yang tersisa dan set primary berdasarkan index
-            $images = ProductImage::where('product_id', $product->id)
+                if ($firstImage) {
+                    $firstImage->update(['is_primary' => true]);
+                }
+            }
+        } else {
+            // Jika tidak ada primary yang diset, set gambar pertama sebagai primary
+            $firstImage = ProductImage::where('product_id', $product->id)
                 ->orderBy('id')
-                ->get();
+                ->first();
 
-            $primaryIndex = (int) $request->primary_image_index;
-            if (isset($images[$primaryIndex])) {
-                $images[$primaryIndex]->update(['is_primary' => true]);
+            if ($firstImage) {
+                $firstImage->update(['is_primary' => true]);
             }
         }
 

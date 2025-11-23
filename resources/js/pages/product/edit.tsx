@@ -39,7 +39,7 @@ interface ProductFormData {
     price: string;
     is_active: boolean;
     images: File[];
-    primary_image_index: number;
+    primary_image_id: number | null;
     deleted_image_ids: number[];
     _method?: string;
 }
@@ -59,7 +59,8 @@ export default function EditProduct() {
             price: product?.price?.toString() || '',
             is_active: product?.is_active ?? true,
             images: [] as File[],
-            primary_image_index: product?.primary_image_index || 0,
+            primary_image_id:
+                product?.images?.find((img: any) => img.is_primary)?.id || null,
             deleted_image_ids: [],
             _method: 'PUT',
         });
@@ -97,29 +98,40 @@ export default function EditProduct() {
         setData('images', newImages);
         setNewImagePreviews(newPreviews);
 
-        const totalExisting =
-            existingImages.length - data.deleted_image_ids.length;
-        const adjustedIndex = data.primary_image_index - totalExisting;
-
-        if (adjustedIndex > index) {
-            setData('primary_image_index', data.primary_image_index - 1);
-        } else if (adjustedIndex === index) {
-            setData('primary_image_index', 0);
+        // Jika tidak ada primary image ID (berarti primary adalah gambar baru), reset
+        if (data.primary_image_id === null && newImages.length === 0) {
+            // Set ke gambar existing pertama jika ada
+            const firstExisting = existingImages.find(
+                (img) => !data.deleted_image_ids.includes(img.id),
+            );
+            if (firstExisting) {
+                setData('primary_image_id', firstExisting.id);
+            }
         }
     };
 
-    const removeExistingImage = (imageId: number, imageIndex: number) => {
+    const removeExistingImage = (imageId: number) => {
         setData('deleted_image_ids', [...data.deleted_image_ids, imageId]);
 
-        if (data.primary_image_index === imageIndex) {
-            setData('primary_image_index', 0);
-        } else if (data.primary_image_index > imageIndex) {
-            setData('primary_image_index', data.primary_image_index - 1);
+        // Jika gambar yang dihapus adalah primary, set ke gambar pertama yang tersisa
+        if (data.primary_image_id === imageId) {
+            const remainingImages = existingImages.filter(
+                (img) =>
+                    img.id !== imageId &&
+                    !data.deleted_image_ids.includes(img.id),
+            );
+
+            if (remainingImages.length > 0) {
+                setData('primary_image_id', remainingImages[0].id);
+            } else if (newImagePreviews.length > 0) {
+                // Jika tidak ada gambar existing, set primary ke null (gambar baru pertama)
+                setData('primary_image_id', null);
+            }
         }
     };
 
-    const setPrimaryImage = (index: number) => {
-        setData('primary_image_index', index);
+    const setPrimaryImage = (imageId: number | null) => {
+        setData('primary_image_id', imageId);
     };
 
     const submit: FormEventHandler = (e) => {
@@ -147,6 +159,7 @@ export default function EditProduct() {
                 isNew: false,
             })),
         ...newImagePreviews.map((preview, i) => ({
+            id: null,
             url: preview,
             isNew: true,
             newIndex: i,
@@ -225,8 +238,6 @@ export default function EditProduct() {
                             <Plate
                                 editor={editor}
                                 onChange={({ value }) => {
-                                    // Convert editor value to HTML or JSON string
-
                                     if (value) {
                                         setData(
                                             'description',
@@ -318,7 +329,7 @@ export default function EditProduct() {
                                     <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                                         {allImages.map((img: any, index) => (
                                             <div
-                                                key={img.id || index}
+                                                key={img.id || `new-${index}`}
                                                 className="group relative aspect-[3/4]"
                                             >
                                                 <img
@@ -339,7 +350,6 @@ export default function EditProduct() {
                                                               )
                                                             : removeExistingImage(
                                                                   img.id,
-                                                                  index,
                                                               )
                                                     }
                                                     className="absolute top-2 right-2 rounded-full bg-red-500 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
@@ -349,17 +359,17 @@ export default function EditProduct() {
                                                 <button
                                                     type="button"
                                                     onClick={() =>
-                                                        setPrimaryImage(index)
+                                                        setPrimaryImage(img.id)
                                                     }
                                                     className={`absolute bottom-2 left-2 cursor-pointer rounded px-2 py-1 text-xs ${
-                                                        data.primary_image_index ===
-                                                        index
+                                                        data.primary_image_id ===
+                                                        img.id
                                                             ? 'bg-blue-500 text-white'
                                                             : 'border border-primary bg-white/80 text-gray-700'
                                                     }`}
                                                 >
-                                                    {data.primary_image_index ===
-                                                    index
+                                                    {data.primary_image_id ===
+                                                    img.id
                                                         ? 'Utama'
                                                         : 'Set Utama'}
                                                 </button>
