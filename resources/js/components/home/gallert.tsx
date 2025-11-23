@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 
 export function Gallery({ products, categories, currentCategory }: any) {
     const ref = useRef(null);
-    const isInView = useInView(ref, { once: true, amount: 0.2 });
+    const isInView = useInView(ref, { once: true, amount: 0.1 });
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const isNavigating = useRef(false);
 
