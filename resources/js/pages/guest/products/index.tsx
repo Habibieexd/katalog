@@ -23,7 +23,7 @@ import {
 import GuestLayout from '@/layouts/guest-layout';
 import { index } from '@/routes/products';
 import { Head, router, usePage } from '@inertiajs/react';
-import { ChevronDown, Filter } from 'lucide-react';
+import { ChevronDown, Filter, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export default function Index() {
@@ -151,8 +151,13 @@ export default function Index() {
                                 <h1 className="text-center font-['Poppins'] text-4xl font-bold text-[#3e2308]">
                                     Semua koleksi
                                 </h1>
-                                <div className="desktop flex gap-x-6 sm:hidden">
+                                <div className="mobile flex gap-x-6 sm:hidden">
+                                    <Label htmlFor="search" className="sr-only">
+                                        Cari sesuatu
+                                    </Label>
                                     <Input
+                                        id="search"
+                                        name="search"
                                         placeholder="Cari koleksi songket anda..."
                                         className="border-[#3e2308]"
                                     />
@@ -169,7 +174,11 @@ export default function Index() {
                                                 Filters
                                             </Button>
                                         </SheetTrigger>
-                                        <SheetContent>
+                                        <SheetContent
+                                            onOpenAutoFocus={(e) =>
+                                                e.preventDefault()
+                                            }
+                                        >
                                             <SheetHeader>
                                                 <SheetTitle className="text-xl">
                                                     Filter
@@ -181,13 +190,16 @@ export default function Index() {
                                                     <Label className="text-base">
                                                         Price
                                                     </Label>
-                                                    <div className="flex gap-x-4">
+                                                    <div className="flex gap-x-3">
                                                         <div className="flex flex-col gap-y-2">
-                                                            <Label className="text-base">
+                                                            <Label htmlFor="min_price">
                                                                 Dari
                                                             </Label>
                                                             <Input
+                                                                id="min_price"
+                                                                name="min_price"
                                                                 type="number"
+                                                                className="text-sm"
                                                                 placeholder="Rp Min"
                                                                 value={minPrice}
                                                                 onChange={(e) =>
@@ -199,11 +211,14 @@ export default function Index() {
                                                             />
                                                         </div>
                                                         <div className="flex flex-col gap-y-2">
-                                                            <Label className="text-base">
+                                                            <Label htmlFor="max_price">
                                                                 Sampai
                                                             </Label>
                                                             <Input
+                                                                id="max_price"
+                                                                name="max_price"
                                                                 type="number"
+                                                                className="text-sm"
                                                                 placeholder="Rp Max"
                                                                 value={maxPrice}
                                                                 onChange={(e) =>
@@ -278,7 +293,7 @@ export default function Index() {
                                                                     false,
                                                                 );
                                                             }}
-                                                            className="font-medium"
+                                                            className="text-sm font-medium"
                                                         >
                                                             Terbaru
                                                         </Button>
@@ -297,7 +312,7 @@ export default function Index() {
                                                                     false,
                                                                 );
                                                             }}
-                                                            className="font-medium"
+                                                            className="text-sm font-medium"
                                                         >
                                                             Harga: Rendah ke
                                                             Tinggi
@@ -317,7 +332,7 @@ export default function Index() {
                                                                     false,
                                                                 );
                                                             }}
-                                                            className="font-medium"
+                                                            className="text-sm font-medium"
                                                         >
                                                             Harga: Tinggi ke
                                                             Rendah
@@ -347,11 +362,24 @@ export default function Index() {
                                         </SheetContent>
                                     </Sheet>
                                 </div>
-                                <div className="mobile hidden sm:flex sm:flex-col sm:gap-y-6">
-                                    <Input
-                                        className="w-full border-[#3e2308]"
-                                        placeholder="Cari koleksi songket anda..."
-                                    />
+                                <div className="desktop hidden sm:flex sm:flex-col sm:gap-y-6">
+                                    <div className="flex w-full items-center justify-center space-x-6">
+                                        <Label
+                                            className="sr-only"
+                                            htmlFor="search_desktop"
+                                        >
+                                            Search
+                                        </Label>
+                                        <Input
+                                            id="search_desktop"
+                                            name="search_desktop"
+                                            className="rounded-full border-[#3e2308]"
+                                            placeholder="Cari koleksi songket anda..."
+                                        />
+                                        <Button>
+                                            <Search /> Cari
+                                        </Button>
+                                    </div>
                                     <div className="flex w-full flex-col gap-y-4 sm:flex-row sm:justify-between sm:gap-y-0">
                                         <div className="flex w-full flex-wrap gap-2">
                                             <DropdownMenu modal={false}>
@@ -421,15 +449,20 @@ export default function Index() {
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent
                                                     side="bottom"
-                                                    className="min-w-[300px] gap-y-4 p-6"
+                                                    className="flex min-w-[300px] flex-col gap-y-4 p-6"
                                                     align="start"
                                                 >
                                                     <div className="flex gap-x-4">
                                                         <div className="flex flex-col gap-y-2">
-                                                            <Label className="text-base">
+                                                            <Label
+                                                                className="text-base"
+                                                                htmlFor="min_price"
+                                                            >
                                                                 Dari
                                                             </Label>
                                                             <Input
+                                                                id="min_price"
+                                                                name="min_price"
                                                                 type="number"
                                                                 placeholder="Rp Min"
                                                                 value={minPrice}
@@ -442,10 +475,15 @@ export default function Index() {
                                                             />
                                                         </div>
                                                         <div className="flex flex-col gap-y-2">
-                                                            <Label className="text-base">
+                                                            <Label
+                                                                className="text-base"
+                                                                htmlFor="max_price"
+                                                            >
                                                                 Sampai
                                                             </Label>
                                                             <Input
+                                                                id="max_price"
+                                                                name="max_price"
                                                                 type="number"
                                                                 placeholder="Rp Max"
                                                                 value={maxPrice}
