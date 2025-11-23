@@ -10,16 +10,27 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import {
+    Sheet,
+    SheetClose,
+    SheetContent,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from '@/components/ui/sheet';
 import GuestLayout from '@/layouts/guest-layout';
 import { index } from '@/routes/products';
 import { Head, router, usePage } from '@inertiajs/react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Filter } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export default function Index() {
     const { products, categories } = usePage<any>().props;
 
     const [modalPrice, setModalPrice] = useState(false);
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [sortBy, setSortBy] = useState('terbaru');
     const [selectedCategory, setSelectedCategory] = useState<string | null>(
         null,
@@ -135,172 +146,382 @@ export default function Index() {
             <GuestLayout>
                 <div className="bg-[#FFFEFB] px-6 py-12 sm:px-6 md:px-8 md:py-20">
                     <div className="container mx-auto w-full max-w-7xl">
-                        <div className="flex flex-col space-y-8">
-                            <div className="flex flex-col space-y-12">
+                        <div className="flex flex-col gap-y-8">
+                            <div className="flex flex-col gap-y-10 md:gap-y-12">
                                 <h1 className="text-center font-['Poppins'] text-4xl font-bold text-[#3e2308]">
                                     Semua koleksi
                                 </h1>
-                                <div className="flex w-full flex-col space-y-4 sm:flex-row sm:justify-between sm:space-y-0">
-                                    <div className="flex w-full flex-wrap gap-2">
+                                <div className="desktop flex gap-x-6 sm:hidden">
+                                    <Input
+                                        placeholder="Cari koleksi songket anda..."
+                                        className="border-[#3e2308]"
+                                    />
+                                    <Sheet
+                                        open={isSheetOpen}
+                                        onOpenChange={setIsSheetOpen}
+                                    >
+                                        <SheetTrigger asChild>
+                                            <Button
+                                                variant={'ghost'}
+                                                className="cursor-pointer rounded-full border border-[#3e2308]"
+                                            >
+                                                <Filter />
+                                                Filters
+                                            </Button>
+                                        </SheetTrigger>
+                                        <SheetContent>
+                                            <SheetHeader>
+                                                <SheetTitle className="text-xl">
+                                                    Filter
+                                                </SheetTitle>
+                                                <Separator />
+                                            </SheetHeader>
+                                            <div className="grid flex-1 auto-rows-min gap-6 px-4">
+                                                <div className="grid gap-3">
+                                                    <Label className="text-base">
+                                                        Price
+                                                    </Label>
+                                                    <div className="flex gap-x-4">
+                                                        <div className="flex flex-col gap-y-2">
+                                                            <Label className="text-base">
+                                                                Dari
+                                                            </Label>
+                                                            <Input
+                                                                type="number"
+                                                                placeholder="Rp Min"
+                                                                value={minPrice}
+                                                                onChange={(e) =>
+                                                                    setMinPrice(
+                                                                        e.target
+                                                                            .value,
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
+                                                        <div className="flex flex-col gap-y-2">
+                                                            <Label className="text-base">
+                                                                Sampai
+                                                            </Label>
+                                                            <Input
+                                                                type="number"
+                                                                placeholder="Rp Max"
+                                                                value={maxPrice}
+                                                                onChange={(e) =>
+                                                                    setMaxPrice(
+                                                                        e.target
+                                                                            .value,
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <Button
+                                                        className="w-full cursor-pointer"
+                                                        onClick={() => {
+                                                            handlePriceFilter();
+                                                            setIsSheetOpen(
+                                                                false,
+                                                            );
+                                                        }}
+                                                    >
+                                                        Terapkan
+                                                    </Button>
+                                                </div>
+                                                <div className="grid gap-3">
+                                                    <Label className="text-base">
+                                                        Kategori
+                                                    </Label>
+                                                    {categories.map(
+                                                        (e: any) => (
+                                                            <Button
+                                                                variant={
+                                                                    'ghost'
+                                                                }
+                                                                key={e.slug}
+                                                                className={`cursor-pointer justify-start py-2 font-medium text-muted-foreground ${
+                                                                    selectedCategory ===
+                                                                    e.slug
+                                                                        ? 'bg-[#3e2308]/10'
+                                                                        : ''
+                                                                }`}
+                                                                onClick={() => {
+                                                                    handleCategorySelect(
+                                                                        e.slug,
+                                                                    );
+                                                                    setIsSheetOpen(
+                                                                        false,
+                                                                    );
+                                                                }}
+                                                            >
+                                                                {e.name}
+                                                            </Button>
+                                                        ),
+                                                    )}
+                                                </div>
+                                                <div className="grid gap-3">
+                                                    <Label className="text-base">
+                                                        Urutkan
+                                                    </Label>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        <Button
+                                                            variant={
+                                                                sortBy ===
+                                                                'terbaru'
+                                                                    ? 'default'
+                                                                    : 'outline'
+                                                            }
+                                                            onClick={() => {
+                                                                handleSortChange(
+                                                                    'terbaru',
+                                                                );
+                                                                setIsSheetOpen(
+                                                                    false,
+                                                                );
+                                                            }}
+                                                            className="font-medium"
+                                                        >
+                                                            Terbaru
+                                                        </Button>
+                                                        <Button
+                                                            variant={
+                                                                sortBy ===
+                                                                'harga_terendah'
+                                                                    ? 'default'
+                                                                    : 'outline'
+                                                            }
+                                                            onClick={() => {
+                                                                handleSortChange(
+                                                                    'harga_terendah',
+                                                                );
+                                                                setIsSheetOpen(
+                                                                    false,
+                                                                );
+                                                            }}
+                                                            className="font-medium"
+                                                        >
+                                                            Harga: Rendah ke
+                                                            Tinggi
+                                                        </Button>
+                                                        <Button
+                                                            variant={
+                                                                sortBy ===
+                                                                'harga_tertinggi'
+                                                                    ? 'default'
+                                                                    : 'outline'
+                                                            }
+                                                            onClick={() => {
+                                                                handleSortChange(
+                                                                    'harga_tertinggi',
+                                                                );
+                                                                setIsSheetOpen(
+                                                                    false,
+                                                                );
+                                                            }}
+                                                            className="font-medium"
+                                                        >
+                                                            Harga: Tinggi ke
+                                                            Rendah
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <SheetFooter>
+                                                {hasActiveFilters && (
+                                                    <Button
+                                                        variant="outline"
+                                                        onClick={() => {
+                                                            resetFilters();
+                                                            setIsSheetOpen(
+                                                                false,
+                                                            );
+                                                        }}
+                                                        className="cursor-pointer"
+                                                    >
+                                                        Reset Filter
+                                                    </Button>
+                                                )}
+                                                <SheetClose asChild>
+                                                    <Button>Close</Button>
+                                                </SheetClose>
+                                            </SheetFooter>
+                                        </SheetContent>
+                                    </Sheet>
+                                </div>
+                                <div className="mobile hidden sm:flex sm:flex-col sm:gap-y-6">
+                                    <Input
+                                        className="w-full border-[#3e2308]"
+                                        placeholder="Cari koleksi songket anda..."
+                                    />
+                                    <div className="flex w-full flex-col gap-y-4 sm:flex-row sm:justify-between sm:gap-y-0">
+                                        <div className="flex w-full flex-wrap gap-2">
+                                            <DropdownMenu modal={false}>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        variant={'ghost'}
+                                                        className={`cursor-pointer rounded-full border ${
+                                                            selectedCategory
+                                                                ? 'border-[#3e2308] bg-[#3e2308] text-white hover:bg-[#3e2308]/90 hover:text-white'
+                                                                : 'border-[#3e2308]'
+                                                        }`}
+                                                    >
+                                                        Kategori
+                                                        {selectedCategory &&
+                                                            ` (1)`}
+                                                        <ChevronDown />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent
+                                                    side="bottom"
+                                                    className="min-w-[300px]"
+                                                    align="start"
+                                                >
+                                                    {categories.map(
+                                                        (e: any) => (
+                                                            <DropdownMenuItem
+                                                                key={e.slug}
+                                                                className={`cursor-pointer py-2 text-base font-medium ${
+                                                                    selectedCategory ===
+                                                                    e.slug
+                                                                        ? 'bg-[#3e2308]/10'
+                                                                        : ''
+                                                                }`}
+                                                                onClick={() =>
+                                                                    handleCategorySelect(
+                                                                        e.slug,
+                                                                    )
+                                                                }
+                                                            >
+                                                                {e.name}
+                                                                {selectedCategory ===
+                                                                    e.slug &&
+                                                                    ' ✓'}
+                                                            </DropdownMenuItem>
+                                                        ),
+                                                    )}
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+
+                                            <DropdownMenu
+                                                modal={false}
+                                                open={modalPrice}
+                                                onOpenChange={setModalPrice}
+                                            >
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        variant={'ghost'}
+                                                        className={`cursor-pointer rounded-full border ${
+                                                            minPrice || maxPrice
+                                                                ? 'border-[#3e2308] bg-[#3e2308] text-white hover:bg-[#3e2308]/90 hover:text-white'
+                                                                : 'border-[#3e2308]'
+                                                        }`}
+                                                    >
+                                                        Harga
+                                                        <ChevronDown />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent
+                                                    side="bottom"
+                                                    className="min-w-[300px] gap-y-4 p-6"
+                                                    align="start"
+                                                >
+                                                    <div className="flex gap-x-4">
+                                                        <div className="flex flex-col gap-y-2">
+                                                            <Label className="text-base">
+                                                                Dari
+                                                            </Label>
+                                                            <Input
+                                                                type="number"
+                                                                placeholder="Rp Min"
+                                                                value={minPrice}
+                                                                onChange={(e) =>
+                                                                    setMinPrice(
+                                                                        e.target
+                                                                            .value,
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
+                                                        <div className="flex flex-col gap-y-2">
+                                                            <Label className="text-base">
+                                                                Sampai
+                                                            </Label>
+                                                            <Input
+                                                                type="number"
+                                                                placeholder="Rp Max"
+                                                                value={maxPrice}
+                                                                onChange={(e) =>
+                                                                    setMaxPrice(
+                                                                        e.target
+                                                                            .value,
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <Button
+                                                        className="w-full cursor-pointer"
+                                                        onClick={
+                                                            handlePriceFilter
+                                                        }
+                                                    >
+                                                        Terapkan
+                                                    </Button>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+
+                                            {hasActiveFilters && (
+                                                <Button
+                                                    variant="ghost"
+                                                    onClick={resetFilters}
+                                                    className="cursor-pointer rounded-full border border-red-500 text-red-500 hover:bg-red-50 hover:text-red-600"
+                                                >
+                                                    Reset Filter
+                                                </Button>
+                                            )}
+                                        </div>
                                         <DropdownMenu modal={false}>
                                             <DropdownMenuTrigger asChild>
                                                 <Button
                                                     variant={'ghost'}
-                                                    className={`cursor-pointer rounded-full border ${
-                                                        selectedCategory
-                                                            ? 'border-[#3e2308] bg-[#3e2308] text-white hover:bg-[#3e2308]/90 hover:text-white'
-                                                            : 'border-[#3e2308]'
-                                                    }`}
+                                                    className="cursor-pointer rounded-full border border-[#3e2308]"
                                                 >
-                                                    Kategori
-                                                    {selectedCategory && ` (1)`}
+                                                    Urutkan
                                                     <ChevronDown />
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent
                                                 side="bottom"
                                                 className="min-w-[300px]"
-                                                align="start"
+                                                align="end"
                                             >
-                                                {categories.map((e: any) => (
-                                                    <DropdownMenuItem
-                                                        key={e.slug}
-                                                        className={`cursor-pointer py-2 text-base font-medium ${
-                                                            selectedCategory ===
-                                                            e.slug
-                                                                ? 'bg-[#3e2308]/10'
-                                                                : ''
-                                                        }`}
-                                                        onClick={() =>
-                                                            handleCategorySelect(
-                                                                e.slug,
-                                                            )
-                                                        }
+                                                <DropdownMenuRadioGroup
+                                                    value={sortBy}
+                                                    onValueChange={
+                                                        handleSortChange
+                                                    }
+                                                >
+                                                    <DropdownMenuRadioItem
+                                                        value="terbaru"
+                                                        className="py-2 text-base font-medium"
                                                     >
-                                                        {e.name}
-                                                        {selectedCategory ===
-                                                            e.slug && ' ✓'}
-                                                    </DropdownMenuItem>
-                                                ))}
+                                                        Terbaru
+                                                    </DropdownMenuRadioItem>
+                                                    <DropdownMenuRadioItem
+                                                        value="harga_terendah"
+                                                        className="py-2 text-base font-medium"
+                                                    >
+                                                        Harga: Rendah ke Tinggi
+                                                    </DropdownMenuRadioItem>
+                                                    <DropdownMenuRadioItem
+                                                        value="harga_tertinggi"
+                                                        className="py-2 text-base font-medium"
+                                                    >
+                                                        Harga: Tinggi ke Rendah
+                                                    </DropdownMenuRadioItem>
+                                                </DropdownMenuRadioGroup>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
-
-                                        <DropdownMenu
-                                            modal={false}
-                                            open={modalPrice}
-                                            onOpenChange={setModalPrice}
-                                        >
-                                            <DropdownMenuTrigger asChild>
-                                                <Button
-                                                    variant={'ghost'}
-                                                    className={`cursor-pointer rounded-full border ${
-                                                        minPrice || maxPrice
-                                                            ? 'border-[#3e2308] bg-[#3e2308] text-white hover:bg-[#3e2308]/90 hover:text-white'
-                                                            : 'border-[#3e2308]'
-                                                    }`}
-                                                >
-                                                    Harga
-                                                    <ChevronDown />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent
-                                                side="bottom"
-                                                className="min-w-[300px] space-y-4 p-6"
-                                                align="start"
-                                            >
-                                                <div className="flex space-x-4">
-                                                    <div className="flex flex-col space-y-2">
-                                                        <Label className="text-base">
-                                                            Dari
-                                                        </Label>
-                                                        <Input
-                                                            type="number"
-                                                            placeholder="Rp Min"
-                                                            value={minPrice}
-                                                            onChange={(e) =>
-                                                                setMinPrice(
-                                                                    e.target
-                                                                        .value,
-                                                                )
-                                                            }
-                                                        />
-                                                    </div>
-                                                    <div className="flex flex-col space-y-2">
-                                                        <Label className="text-base">
-                                                            Sampai
-                                                        </Label>
-                                                        <Input
-                                                            type="number"
-                                                            placeholder="Rp Max"
-                                                            value={maxPrice}
-                                                            onChange={(e) =>
-                                                                setMaxPrice(
-                                                                    e.target
-                                                                        .value,
-                                                                )
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <Button
-                                                    className="w-full cursor-pointer"
-                                                    onClick={handlePriceFilter}
-                                                >
-                                                    Terapkan
-                                                </Button>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-
-                                        {hasActiveFilters && (
-                                            <Button
-                                                variant="ghost"
-                                                onClick={resetFilters}
-                                                className="cursor-pointer rounded-full border border-red-500 text-red-500 hover:bg-red-50 hover:text-red-600"
-                                            >
-                                                Reset Filter
-                                            </Button>
-                                        )}
                                     </div>
-                                    <DropdownMenu modal={false}>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button
-                                                variant={'ghost'}
-                                                className="cursor-pointer rounded-full border border-[#3e2308]"
-                                            >
-                                                Urutkan
-                                                <ChevronDown />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent
-                                            side="bottom"
-                                            className="min-w-[300px]"
-                                            align="end"
-                                        >
-                                            <DropdownMenuRadioGroup
-                                                value={sortBy}
-                                                onValueChange={handleSortChange}
-                                            >
-                                                <DropdownMenuRadioItem
-                                                    value="terbaru"
-                                                    className="py-2 text-base font-medium"
-                                                >
-                                                    Terbaru
-                                                </DropdownMenuRadioItem>
-                                                <DropdownMenuRadioItem
-                                                    value="harga_terendah"
-                                                    className="py-2 text-base font-medium"
-                                                >
-                                                    Harga: Rendah ke Tinggi
-                                                </DropdownMenuRadioItem>
-                                                <DropdownMenuRadioItem
-                                                    value="harga_tertinggi"
-                                                    className="py-2 text-base font-medium"
-                                                >
-                                                    Harga: Tinggi ke Rendah
-                                                </DropdownMenuRadioItem>
-                                            </DropdownMenuRadioGroup>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
                                 </div>
 
                                 {/* Active filters display */}
@@ -335,6 +556,16 @@ export default function Index() {
                                                     maxPrice,
                                                 ).toLocaleString('id-ID')}
                                             </span>
+                                        )}
+
+                                        {hasActiveFilters && (
+                                            <Button
+                                                variant="ghost"
+                                                onClick={resetFilters}
+                                                className="cursor-pointer rounded-full border border-red-500 text-red-500 hover:bg-red-50 hover:text-red-600 sm:hidden"
+                                            >
+                                                Reset Filter
+                                            </Button>
                                         )}
                                     </div>
                                 )}
