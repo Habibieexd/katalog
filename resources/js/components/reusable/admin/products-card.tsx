@@ -50,7 +50,7 @@ export default function ({ product }: { product: any }) {
 
                         {product?.images.length > 0 ? (
                             <img
-                                src={`/storage/${product.images[0].path}`}
+                                src={`https://res.cloudinary.com/daif5nsos/image/upload/w_800,c_limit,q_auto,f_auto/${product.images[0].path}`}
                                 alt={product.name}
                                 className="h-full w-full object-cover object-center"
                             />

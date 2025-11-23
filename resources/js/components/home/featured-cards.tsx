@@ -25,7 +25,7 @@ export function FeaturedProducts({ products }: any) {
                             <div className="flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-md bg-gray-100">
                                 {p?.images.length > 0 ? (
                                     <img
-                                        src={`/storage/${p.images[0].path}`}
+                                        src={`https://res.cloudinary.com/daif5nsos/image/upload/w_800,c_limit,q_auto,f_auto/${p.images[0].path}`}
                                         alt="image placeholder"
                                         className="w-f h-full rounded object-cover object-center"
                                         width={500}

@@ -134,7 +134,7 @@ export function Gallery({ products, categories, currentCategory }: any) {
                                                 <div className="flex h-full items-center justify-center overflow-hidden rounded-md bg-gray-100">
                                                     {item?.images.length > 0 ? (
                                                         <BlurImage
-                                                            src={`/storage/${item.images[0].path}`}
+                                                            src={`https://res.cloudinary.com/daif5nsos/image/upload/w_800,c_limit,q_auto,f_auto/${item.images[0].path}`}
                                                             alt={item.name}
                                                             placeholder={
                                                                 item.images[0]

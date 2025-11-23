@@ -64,10 +64,10 @@ export default function Detail({ product, related_products }: any) {
                                                 ?.path && (
                                                 <Link
                                                     data-fancybox="images"
-                                                    href={`/storage/${product?.images[selectedImageIndex].path}`}
+                                                    href={`https://res.cloudinary.com/daif5nsos/image/upload/w_800,c_limit,q_auto,f_auto/${product?.images[selectedImageIndex].path}`}
                                                 >
                                                     <BlurImage
-                                                        src={`/storage/${product?.images[selectedImageIndex].path}`}
+                                                        src={`https://res.cloudinary.com/daif5nsos/image/upload/w_800,c_limit,q_auto,f_auto/${product?.images[selectedImageIndex].path}`}
                                                         alt={
                                                             product?.images[
                                                                 selectedImageIndex
@@ -92,11 +92,11 @@ export default function Detail({ product, related_products }: any) {
                                                     <Link
                                                         key={image.path}
                                                         data-fancybox="images"
-                                                        href={`/storage/${image.path}`}
+                                                        href={`https://res.cloudinary.com/daif5nsos/image/upload/w_800,c_limit,q_auto,f_auto/${image.path}`}
                                                         className="hidden"
                                                     >
                                                         <BlurImage
-                                                            src={`/storage/${image.path}`}
+                                                            src={`https://res.cloudinary.com/daif5nsos/image/upload/w_800,c_limit,q_auto,f_auto/${image.path}`}
                                                             alt={image.name}
                                                             placeholder={
                                                                 image.placeholder
@@ -134,7 +134,7 @@ export default function Detail({ product, related_products }: any) {
                                                     )}
                                                 >
                                                     <img
-                                                        src={`/storage/${image.path}`}
+                                                        src={`https://res.cloudinary.com/daif5nsos/image/upload/w_800,c_limit,q_auto,f_auto/${image.path}`}
                                                         alt={image.path}
                                                         className="h-16 w-16 object-cover sm:h-20 sm:w-20"
                                                     />

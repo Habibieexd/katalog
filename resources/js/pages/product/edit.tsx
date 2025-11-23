@@ -325,7 +325,7 @@ export default function EditProduct() {
                                                     src={
                                                         img.isNew
                                                             ? img.url
-                                                            : `/storage/${img.path}`
+                                                            : `https://res.cloudinary.com/daif5nsos/image/upload/w_800,c_limit,q_auto,f_auto/${img.path}`
                                                     }
                                                     alt={`Preview ${index + 1}`}
                                                     className="h-full w-full rounded-lg border object-cover"

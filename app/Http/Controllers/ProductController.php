@@ -59,11 +59,17 @@ class ProductController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $image) {
                 // Upload gambar original
-                $path = $image->store('products', 'public');
-                $fullPath = storage_path('app/public/' . $path);
+                $fileName = 'product_' . $product->id . '_' . time() . '_' . $index . '.' . $image->extension();
+
+                // Upload ke Cloudinary menggunakan Storage
+                $path = Storage::disk('cloudinary')->putFileAs(
+                    'products',
+                    $image,
+                    $fileName
+                );
 
                 // Generate LQIP placeholder
-                $placeholder = $this->generatePlaceholder($fullPath);
+                $placeholder = $this->generatePlaceholder($path);
 
                 ProductImage::create([
                     'product_id' => $product->id,
@@ -122,8 +128,14 @@ class ProductController extends Controller
                     ->first();
 
                 if ($image) {
-                    // Hapus file dari storage
-                    Storage::disk('public')->delete($image->path);
+                    // ✅ Hapus file dari Cloudinary
+                    try {
+                        Storage::disk('cloudinary')->delete($image->path);
+                    } catch (\Exception $e) {
+                        // Log error tapi tetap lanjut
+                        Log::error('Failed to delete from Cloudinary: ' . $e->getMessage());
+                    }
+
                     // Hapus record dari database
                     $image->delete();
                 }
@@ -132,10 +144,21 @@ class ProductController extends Controller
 
         // Upload gambar baru jika ada
         if ($request->hasFile('images')) {
+            // Hitung jumlah gambar yang sudah ada (untuk index)
+            $existingImagesCount = $product->images()->count();
+
             foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('products', 'public');
-                $fullPath = storage_path('app/public/' . $path);
-                $placeholder = $this->generatePlaceholder($fullPath);
+                // ✅ Upload ke Cloudinary
+                $fileName = 'product_' . $product->id . '_' . time() . '_' . ($existingImagesCount + $index) . '.' . $image->extension();
+
+                $path = Storage::disk('cloudinary')->putFileAs(
+                    'products',
+                    $image,
+                    $fileName
+                );
+
+                // ✅ Generate LQIP placeholder dari Cloudinary (atau set null)
+                $placeholder = $this->generatePlaceholder($path); // Atau gunakan fungsi generatePlaceholder jika mau
 
                 ProductImage::create([
                     'product_id' => $product->id,
@@ -180,8 +203,8 @@ class ProductController extends Controller
 
         $images = ProductImage::where('product_id', $product->id)->get();
         foreach ($images as $image) {
-            if (Storage::disk('public')->exists($image->path)) {
-                Storage::disk('public')->delete($image->path);
+            if (Storage::disk('cloudinary')->exists($image->path)) {
+                Storage::disk('cloudinary')->delete($image->path);
             }
             $image->delete();
         }
