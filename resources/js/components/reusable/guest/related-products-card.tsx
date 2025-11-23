@@ -43,7 +43,7 @@ export default function RelatedProductsCard({ products }: any) {
                             {/* <h3 className="text-sm font-medium text-gray-600">
                                 {item.category?.name}
                             </h3> */}
-                            <p className="mt-1 text-xl font-semibold text-[#3e2308]">
+                            <p className="mt-1 font-['Playfair_Display'] text-xl font-semibold text-[#3e2308]">
                                 {item.name}
                             </p>
                             <div className="mt-1 line-clamp-2 text-[#5A4A3A]">

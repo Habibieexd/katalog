@@ -240,7 +240,7 @@ export default function Detail({ product, related_products }: any) {
                                     Anda mungkin juga suka
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent className="grid grid-cols-1 gap-6 px-0 sm:grid-cols-2 md:gap-8 lg:grid-cols-3 lg:gap-12">
+                            <CardContent className="grid grid-cols-1 gap-12 px-0 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3 lg:gap-12">
                                 <RelatedProductsCard
                                     products={related_products}
                                 />

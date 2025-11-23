@@ -175,7 +175,7 @@ export function Gallery({ products, categories, currentCategory }: any) {
                                             <div className="space-y-1">
                                                 <Link
                                                     href={`products/${item.slug}`}
-                                                    className="line-clamp-2 font-['Playfair_Display'] text-2xl font-semibold text-[#5A4A3A]"
+                                                    className="line-clamp-2 font-['Playfair_Display'] text-2xl font-semibold text-[#3E2308]"
                                                 >
                                                     {item.name}
                                                 </Link>
